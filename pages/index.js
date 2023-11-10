@@ -38,7 +38,8 @@ export default function Home({ allProjectsData }) {
   );
 }
 
-// TODO: This is for static generation. Change to getServerSideProps(context)
+// TODO: This is for static generation. Look into "On-Demand Revalidation" which can be triggered manually
+// ref: https://nextjs.org/docs/pages/building-your-application/data-fetching/incremental-static-regeneration#on-demand-revalidation
 export async function getStaticProps() {
   const allProjectsData = getSortedProjectData();
   return {

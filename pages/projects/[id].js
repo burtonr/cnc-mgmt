@@ -31,8 +31,8 @@ export async function getStaticPaths() {
     }
 }
 
-// TODO: This is for static generation. Change to getServerSideProps(context)
-// ref: https://nextjs.org/docs/pages/building-your-application/data-fetching#getserversideprops-server-side-rendering
+// TODO: This is for static generation. Look into "On-Demand Revalidation" which can be triggered manually
+// ref: https://nextjs.org/docs/pages/building-your-application/data-fetching/incremental-static-regeneration#on-demand-revalidation
 export async function getStaticProps({ params }) {
     const projectData = getProjectData(params.id)
     return {
