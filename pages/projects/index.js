@@ -13,6 +13,8 @@ import NoItems from '../../components/noItems';
 
 export default function projects() {
     const [open, setOpen] = useState(false)
+    const [newProjectName, setNewProjectName] = useState('')
+    const [newProjectDescription, setNewProjectDescription] = useState('')
     const { data, error, isLoading } = useSWR('/api/projects', fetcher)
 
     function handleClickOpen() {
@@ -23,33 +25,64 @@ export default function projects() {
         setOpen(false)
     }
 
-    function handleSubmit() {
+    function handleSubmit(event) {
         console.log('Submitting new project...')
+
+        event.preventDefault()
+        // setIsLoading(true)
+        // setError(null)
+
+        try {
+            // TODO: Call the API with the data
+            console.log(`Creating project: ${newProjectName}`)
+            console.log(`Project description: ${newProjectDescription}`)
+        } catch (error) {
+            // setError(error.message)
+            console.error(error)
+        } finally {
+            // setIsLoading(false)
+            console.log('complete')
+        }
     }
 
     function createProjectDialog() {
         return (
             <>
                 <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>Subscribe</DialogTitle>
+                    <DialogTitle>Create a Project</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            To subscribe to this website, please enter your email address here. We
-                            will send updates occasionally.
+                            Create a new project to manage all the associated designs in one place
                         </DialogContentText>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            label="Email Address"
-                            type="email"
-                            fullWidth
-                            variant="standard"
-                        />
+                        <form onSubmit={handleSubmit}>
+                            <TextField
+                                autoFocus
+                                required
+                                margin="dense"
+                                id="name"
+                                name='name'
+                                value={newProjectName}
+                                onChange={e => setNewProjectName(e.target.value)}
+                                label="Project Name"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                margin="dense"
+                                id="description"
+                                name='description'
+                                value={newProjectDescription}
+                                onChange={e => setNewProjectDescription(e.target.value)}
+                                label="Description"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </form>
+                        {error && <div style={{ color: 'red'}}>{error}</div>}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleSubmit}>Subscribe</Button>
+                        <Button type='submit' onClick={handleSubmit}>Create</Button>
                     </DialogActions>
                 </Dialog>
             </>
