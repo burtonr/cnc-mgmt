@@ -2,28 +2,41 @@ import Head from 'next/head';
 import Image from 'next/image';
 import styles from './layout.module.css';
 import utilStyles from '../styles/utils.module.css';
-import Link from 'next/link';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import { useState } from 'react';
+
 
 const name = 'Burton';
-export const siteTitle = 'Next.js Sample Website';
+export const siteTitle = 'CNC Mgmt.';
 
 export default function Layout({ children, home }) {
+    const [anchorEl, setAnchorEl] = useState(null)
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget)
+    }
+
+    const handleClose = () => {
+        setAnchorEl(null)
+    }
+
     return (
-        <div className={styles.container}>
+        <>
             <Head>
                 <link rel="icon" href="/favicon.ico" />
                 <meta
                     name="description"
                     content="Learn how to build a personal website using Next.js"
                 />
-                <meta
-                    property="og:image"
-                    content={`https://og-image.vercel.app/${encodeURI(
-                        siteTitle,
-                    )}.png?theme=light&md=0&fontSize=75px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fnextjs-black-logo.svg`}
-                />
                 <meta name="og:title" content={siteTitle} />
                 <meta name="twitter:card" content="summary_large_image" />
+                <title>{siteTitle}</title>
             </Head>
             <header className={styles.header}>
                 {home ? (
@@ -40,30 +53,61 @@ export default function Layout({ children, home }) {
                     </>
                 ) : (
                     <>
-                        <Link href="/">
-                            <Image
-                                priority
-                                src="/images/profile.jpg"
-                                className={utilStyles.borderCircle}
-                                height={108}
-                                width={108}
-                                alt=""
-                            />
-                        </Link>
-                        <h2 className={utilStyles.headingLg}>
-                            <Link href="/" className={utilStyles.colorInherit}>
-                                {name}
-                            </Link>
-                        </h2>
+                        <AppBar position="static">
+                            <Toolbar>
+                                <Typography
+                                    component="a"
+                                    href="/"
+                                    variant="h6"
+                                    sx={{
+                                        color: 'inherit',
+                                        flexGrow: 1,
+                                        textDecoration: 'none' 
+                                    }}
+                                >
+                                    CNC Mgmt.
+                                </Typography>
+
+                                <div>
+                                    <IconButton
+                                        size="large"
+                                        aria-label="account of current user"
+                                        aria-controls="menu-appbar"
+                                        aria-haspopup="true"
+                                        onClick={handleMenu}
+                                        color="inherit"
+                                    >
+                                        <AccountCircle />
+                                    </IconButton>
+                                    <Menu
+                                        id="menu-appbar"
+                                        anchorEl={anchorEl}
+                                        anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                        keepMounted
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                        open={Boolean(anchorEl)}
+                                        onClose={handleClose}
+                                    >
+                                        <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                                    </Menu>
+                                </div>
+                            </Toolbar>
+                        </AppBar>
                     </>
                 )}
             </header>
-            <main>{children}</main>
-            {!home && (
-                <div className={styles.backToHome}>
-                    <Link href="/">← Back to home</Link>
+            <main>
+                <div className={styles.container}>
+                {children}
                 </div>
-            )}
-        </div>
+            </main>
+        </>
     );
 }
