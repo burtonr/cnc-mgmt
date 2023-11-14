@@ -1,6 +1,32 @@
+// import * as React from 'react';
+// import Container from '@mui/material/Container';
+// import Box from '@mui/material/Box';
+// import Typography from '@mui/material/Typography';
+
+// export default function ProjectsPage() {
+//   return (
+//     <Container>
+//       <Box
+//         sx={{
+//           display: 'flex',
+//           flexDirection: 'column',
+//           justifyContent: 'center',
+//           alignItems: 'center',
+//         }}
+//       >
+//         <Typography variant="body1" gutterBottom>
+//           Projects Page
+//         </Typography>
+//       </Box>
+//     </Container>
+//   );
+// }
+
+'use client'
 import { useState } from 'react'
 import useSWR from 'swr'
-import { fetcher } from '../../lib/api'
+import { createProject, fetcher } from '../lib/api'
+import Container from '@mui/material/Container'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -8,13 +34,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Layout from '../../components/layout';
 import NoItems from '../../components/noItems';
 
-export default function projects() {
+export default function Page() {
     const [open, setOpen] = useState(false)
     const [newProjectName, setNewProjectName] = useState('')
     const [newProjectDescription, setNewProjectDescription] = useState('')
+    const [isSaving, setIsSaving] = useState(false)
+    const [saveError, setSaveError] = useState(null)
     const { data, error, isLoading } = useSWR('/api/projects', fetcher)
 
     function handleClickOpen() {
@@ -22,27 +49,39 @@ export default function projects() {
     }
 
     function handleClose() {
+        setNewProjectName('')
+        setNewProjectDescription('')
         setOpen(false)
     }
 
-    function handleSubmit(event) {
-        console.log('Submitting new project...')
+    async function handleSubmit(event) {
+        console.log('submitting...')
+    //     event.preventDefault()
+    //     setIsSaving(true)
+    //     setSaveError(null)
 
-        event.preventDefault()
-        // setIsLoading(true)
-        // setError(null)
+    //     try {
+    //         const newProject = await createProject(newProjectName, newProjectDescription)
+    //         // const response = await fetch('/api/projects', {
+    //         //     method: 'POST',
+    //         //     body: JSON.stringify({
+    //         //         name: newProjectName,
+    //         //         description: newProjectDescription,
+    //         //     })
+    //         // })
 
-        try {
-            // TODO: Call the API with the data
-            console.log(`Creating project: ${newProjectName}`)
-            console.log(`Project description: ${newProjectDescription}`)
-        } catch (error) {
-            // setError(error.message)
-            console.error(error)
-        } finally {
-            // setIsLoading(false)
-            console.log('complete')
-        }
+    //         // console.log('Response...')
+    //         // console.log(JSON.stringify(response))
+
+    //         // if (!response.ok) {
+    //         //     throw new Error('Unable to create new project. Try again later');
+    //         // }
+    //     } catch (error) {
+    //         setSaveError(error.message)
+    //         console.error(error)
+    //     } finally {
+    //         setIsSaving(false)
+    //     }
     }
 
     function createProjectDialog() {
@@ -78,11 +117,13 @@ export default function projects() {
                                 variant="standard"
                             />
                         </form>
-                        {error && <div style={{ color: 'red'}}>{error}</div>}
+                        {saveError && <div style={{ color: 'red' }}>{saveError}</div>}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
-                        <Button type='submit' onClick={handleSubmit}>Create</Button>
+                        <Button type='submit' disabled={isSaving} onClick={handleSubmit}>
+                            {isSaving ? 'Creating...' : 'Create'}
+                        </Button>
                     </DialogActions>
                 </Dialog>
             </>
@@ -92,16 +133,21 @@ export default function projects() {
     if (error) return <div>Failed to load projects</div>
     if (isLoading) return <div>Loading...</div>
 
-    // return <div>TODO: list of projects...</div>
     return (
-        <Layout>
-            {(!data || data.length === 0) 
+        <Container>
+            {(!data || data.length === 0)
                 && <NoItems
-                        itemType={'project'}
-                        onButtonClickHandler={handleClickOpen}
-                    />
+                    itemType={'project'}
+                    onButtonClickHandler={handleClickOpen}
+                />
             }
+            {(data && data.length >= 1)
+                && <Button variant="outlined" onClick={handleClickOpen}>
+                    Create New Project
+                </Button>
+            }
+
             {createProjectDialog()}
-        </Layout>
+        </Container>
     )
 }
