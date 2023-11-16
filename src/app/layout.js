@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Link from 'next/link';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -8,6 +7,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ThemeRegistry from '@/components/ThemeRegistry/ThemeRegistry';
+import NavLinks from '@/components/navLinks';
 import './global.css'
 
 export const metadata = {
@@ -28,6 +28,7 @@ export default function RootLayout({ children }) {
               <Typography variant="h6" noWrap component="a" href="/" color="black">
                 CNC Management
               </Typography>
+              <NavLinks />
             </Toolbar>
           </AppBar>
           <Box

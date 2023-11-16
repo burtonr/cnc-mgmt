@@ -1,7 +1,7 @@
 'use client'
 import useSWR from 'swr'
 import { useState } from 'react'
-import { createProject, fetcher } from '../lib/api'
+import { createProject, fetcher } from '@/app/lib/api'
 import { useRouter } from 'next/navigation'
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -15,10 +15,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Unstable_Grid2';
-import NoItems from '../../components/noItems';
+import NoItems from '@/components/noItems';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography'
-import Date from '../../components/date'
+import Date from '@/components/date'
 import styles from './projects.module.css'
 
 export default function Page() {
