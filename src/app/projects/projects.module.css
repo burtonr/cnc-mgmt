@@ -1,0 +1,9 @@
+.projectCard time {
+    display: block;
+    text-align: end;
+}
+
+.description {
+    font-size: 0.8rem !important;
+    float: right;
+}

@@ -17,7 +17,9 @@ export async function PUT(request) {
             return Response.json({ error: 'A Project with that name already exists' }, { status: 400 })
         }
 
-        const result = await collection.insertOne(data)
+        const newProject = { ...data, created: new Date()}
+
+        const result = await collection.insertOne(newProject)
 
         if (!result.insertedId) {
             console.log('No insertedId. Failed | 400')

@@ -18,6 +18,8 @@ import Grid from '@mui/material/Unstable_Grid2';
 import NoItems from '../../components/noItems';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography'
+import Date from '../../components/date'
+import styles from './projects.module.css'
 
 export default function Page() {
     const [open, setOpen] = useState(false)
@@ -119,13 +121,16 @@ export default function Page() {
                 <Grid container spacing={2} justifyContent='center'>
                     {data.map((project, index) => (
                         <Grid xs={12} md={6} lg={4} key={index}>
-                            <Card>
+                            <Card className={styles.projectCard}>
                                 <CardActionArea href={`/projects/${project.name}`}>
                                     <CardContent>
+                                        <Typography variant='caption' color="text.secondary">
+                                            <Date dateString={project.created} />
+                                        </Typography>
                                         <Typography variant="h5" component="div">
                                             {project.name}
                                         </Typography>
-                                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        <Typography className={styles.description} color="text.secondary" gutterBottom>
                                             {project.description}
                                         </Typography>
                                     </CardContent>
