@@ -30,9 +30,10 @@ export default function NavLinks() {
 }
 
 function Crumb({ text, href, last = false }) {
+    const labelText = decodeURIComponent(text)
     if (last) {
-        return <Chip label={text} variant='outlined' />
+        return <Chip label={labelText} variant='outlined' />
     }
 
-    return <Chip label={text} component='a' href={href} clickable />
+    return <Chip label={labelText} component='a' href={href} clickable />
 }
