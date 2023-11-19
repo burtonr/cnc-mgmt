@@ -9,6 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 export default function CreateDesign({ projectName }) {
     const [open, setOpen] = useState(false)
@@ -45,6 +46,8 @@ function SubmitButton() {
 
 function DesignForm({ project, onCancel }) {
     const [saveError, formAction] = useFormState(createDesign, null)
+    const [fileName, setFileName] = useState(null)
+
     return (
         <form action={formAction}>
             <DialogTitle>Create a Design</DialogTitle>
@@ -87,6 +90,22 @@ function DesignForm({ project, onCancel }) {
                     fullWidth
                     variant="standard"
                 />
+                <TextField
+                    margin="dense"
+                    id="material"
+                    name='material'
+                    label="Material"
+                    fullWidth
+                    variant="standard"
+                />
+                <Button variant="text" component="label" >
+                    Select G-code
+                    <input accept=".gcode,.mpt,.mpf,.nc,.ncc" hidden type="file" onChange={(e) => setFileName(e.target.files[0].name)} name='inputFile' />
+                </Button>
+                <Typography color='text.secondary' sx={{ display: 'inline-flex', paddingLeft: '1em' }}>
+                    {fileName}
+                </Typography>
+
                 {saveError && <div style={{ color: 'red' }}>{saveError}</div>}
             </DialogContent>
             <DialogActions>

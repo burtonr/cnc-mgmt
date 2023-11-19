@@ -37,8 +37,17 @@ export const createDesign = async (_, formData) => {
     // TODO: temp to verify loading state on form
     await sleep(1500)
 
-    const designName = formData.get('name')
     const projectName = formData.get('projectName')
+    const designName = formData.get('name')
+    const description = formData.get('description')
+    const tool = formData.get('tool')
+    const operation = formData.get('operation')
+    const material = formData.get('material')
+
+    const gcodeFile = formData.get('inputFile')
+
+    // TODO: Upload file (if present) to GCS and put path in MongoDB object
+    console.log(`G-code file: ${gcodeFile.name}`)
 
     // TODO: implement save functionality
     console.log(`Form data -> Name: ${designName} | Project Name: ${projectName}`)
