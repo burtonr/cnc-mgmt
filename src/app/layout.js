@@ -7,7 +7,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ThemeRegistry from '@/components/ThemeRegistry/ThemeRegistry';
-import NavLinks from '@/components/navLinks';
+import NavLinks from '@/components/NavLinks';
 import './global.css'
 
 export const metadata = {

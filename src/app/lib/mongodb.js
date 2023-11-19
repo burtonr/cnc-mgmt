@@ -30,3 +30,9 @@ export async function connectToDatabase() {
         console.error(e)
     }
 }
+
+export async function getProjectsCollection() {
+    if (!database)
+        await connectToDatabase()
+    return await database.collection('projects')
+}

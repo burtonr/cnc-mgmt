@@ -1,116 +1,17 @@
-'use client'
-import useSWR from 'swr'
-import { useState } from 'react'
-import { createProject, fetcher } from '@/app/lib/api'
-import { useRouter } from 'next/navigation'
-import Button from '@mui/material/Button';
+import { getProjects } from '../lib/data'
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardActionArea from '@mui/material/CardActionArea'
 import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container'
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Unstable_Grid2';
-import NoItems from '@/components/noItems';
-import TextField from '@mui/material/TextField';
+import NoItems from '@/components/NoItems';
 import Typography from '@mui/material/Typography'
-import Date from '@/components/date'
+import Date from '@/components/Date'
 import styles from './projects.module.css'
+import CreateProject from '@/components/CreateProject';
 
-export default function Page() {
-    const [open, setOpen] = useState(false)
-    const [newProjectName, setNewProjectName] = useState('')
-    const [newProjectDescription, setNewProjectDescription] = useState('')
-    const [isSaving, setIsSaving] = useState(false)
-    const [saveError, setSaveError] = useState(null)
-    const { data, error, isLoading } = useSWR('/api/projects', fetcher)
-    const { push } = useRouter()
-
-    function handleClickOpen() {
-        setOpen(true)
-    }
-
-    function handleClose() {
-        setNewProjectName('')
-        setNewProjectDescription('')
-        setSaveError(null)
-        setOpen(false)
-    }
-
-    async function handleSubmit(event) {
-        event.preventDefault()
-        setIsSaving(true)
-        setSaveError(null)
-
-        try {
-            await createProject(newProjectName, newProjectDescription)
-            push(`/projects/${newProjectName}`)
-        } catch (error) {
-            setSaveError(error.message)
-        } finally {
-            setIsSaving(false)
-        }
-    }
-
-    function createProjectDialog() {
-        return (
-            <>
-                <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>Create a Project</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Create a new project to manage all the associated designs in one place
-                        </DialogContentText>
-                        <form onSubmit={handleSubmit}>
-                            <TextField
-                                autoFocus
-                                required
-                                margin="dense"
-                                id="name"
-                                name='name'
-                                value={newProjectName}
-                                onChange={e => setNewProjectName(e.target.value)}
-                                label="Project Name"
-                                fullWidth
-                                variant="standard"
-                            />
-                            <TextField
-                                margin="dense"
-                                id="description"
-                                name='description'
-                                value={newProjectDescription}
-                                onChange={e => setNewProjectDescription(e.target.value)}
-                                label="Description"
-                                fullWidth
-                                variant="standard"
-                            />
-                        </form>
-                        {saveError && <div style={{ color: 'red' }}>{saveError}</div>}
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
-                        <Button type='submit' disabled={isSaving} onClick={handleSubmit}>
-                            {isSaving ? 'Creating...' : 'Create'}
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </>
-        )
-    }
-
-    function createProjectButton() {
-        if (data && data.length >= 1) {
-            return (
-                <Button variant="outlined" onClick={handleClickOpen} sx={{ float: 'right' }}>
-                    Create New Project
-                </Button>
-            )
-        }
-    }
+export default async function Page() {
+    const data = await getProjects()
 
     function projectList() {
         return (
@@ -135,10 +36,6 @@ export default function Page() {
                                         </Typography>
                                     </CardContent>
                                 </CardActionArea>
-                                {/* <CardActions> */}
-                                {/* TODO: Delete? Edit? */}
-                                {/* <Button size="small">Learn More</Button> */}
-                                {/* </CardActions> */}
                             </Card>
                         </Grid>
                     ))}
@@ -147,15 +44,12 @@ export default function Page() {
         )
     }
 
-    if (error) return <div>Failed to load projects</div>
-    if (isLoading) return <div>Loading...</div>
-
     return (
         <Container>
-            {createProjectButton()}
+            {(data && data.length >= 1) && <CreateProject />}
+
             {projectList()}
-            <NoItems data={data} itemType={'project'} onButtonClickHandler={handleClickOpen} />
-            {createProjectDialog()}
+            <NoItems data={data} itemType={'project'} createComponent={<CreateProject/>} />
         </Container>
     )
 }
