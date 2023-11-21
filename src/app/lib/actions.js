@@ -1,6 +1,6 @@
 'use server'
 import { redirect } from 'next/navigation'
-import { getProjectsCollection } from "./mongodb"
+import { getDesignsCollection, getProjectsCollection } from "./mongodb"
 
 export const createProject = async (_, formData) => {
     try {
@@ -15,7 +15,8 @@ export const createProject = async (_, formData) => {
         const newProject = {
             name: projectName,
             description: formData.get('description'),
-            created: new Date() }
+            created: new Date()
+        }
 
         const result = await collection.insertOne(newProject)
 
@@ -33,16 +34,8 @@ export const createProject = async (_, formData) => {
 }
 
 export const createDesign = async (_, formData) => {
-
-    // TODO: temp to verify loading state on form
-    await sleep(1500)
-
     const projectName = formData.get('projectName')
     const designName = formData.get('name')
-    const description = formData.get('description')
-    const tool = formData.get('tool')
-    const operation = formData.get('operation')
-    const material = formData.get('material')
 
     const gcodeFile = formData.get('inputFile')
 
@@ -51,12 +44,34 @@ export const createDesign = async (_, formData) => {
 
     // TODO: implement save functionality
     console.log(`Form data -> Name: ${designName} | Project Name: ${projectName}`)
-    // redirect(`/projects/${projectName}/${designName}`)
-    return 'Unable to create design'
-}
 
-function sleep(ms) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
+    try {
+        const collection = await getDesignsCollection()
+        const existingDesign = await collection.countDocuments({ project: projectName, name: designName })
+        if (existingDesign !== 0) {
+            return 'A design with that name already exists'
+        }
+
+        const newDesign = {
+            project: projectName,
+            name: designName,
+            description: formData.get('description'),
+            tool: formData.get('tool'),
+            operation: formData.get('operation'),
+            material: formData.get('material')
+        }
+
+        const result = await collection.insertOne(newDesign)
+
+        if (!result.insertedId) {
+            console.error('No InsertedId. Failed | 400')
+            return 'Unable to store design'
+        }
+
+        redirect(`/projects/${projectName}/${designName}`)
+    } catch (error) {
+        console.error('Failed to create design')
+        console.error(error)
+        return error.message
+    }
 }

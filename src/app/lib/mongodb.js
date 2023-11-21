@@ -36,3 +36,9 @@ export async function getProjectsCollection() {
         await connectToDatabase()
     return await database.collection('projects')
 }
+
+export async function getDesignsCollection() {
+    if (!database)
+        await connectToDatabase()
+    return await database.collection('designs')
+}

@@ -11,15 +11,15 @@ import Date from '@/components/Date'
 import styles from '@/app/projects/projects.module.css'
 
 export default async function Page({ params }) {
-    const projectName = decodeURIComponent(params.slug)
+    const projectName = decodeURIComponent(params.projectSlug)
     const data = await getDesigns(projectName)
 
 
     function designList() {
         return (
             <>
-                <Typography variant='h4' component='div'>
-                    Designs
+                <Typography variant='h4' component='div' className={styles.capitalCase}>
+                    {projectName} Designs
                 </Typography>
                 <Grid container spacing={2} justifyContent='center'>
                     {data.map((design, index) => (
